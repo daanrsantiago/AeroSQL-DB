@@ -1,0 +1,1 @@
+python Gera_AeroSQL_DB_mysql.py
