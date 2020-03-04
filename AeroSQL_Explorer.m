@@ -20,7 +20,7 @@ AeroSQL_explorer.main_figure.Position = [400 350 1100 700];
 
 % Listbox com perfis disponíveis
 AeroSQL_explorer.Perfis_listbox = uilistbox(AeroSQL_explorer.main_figure,'Items',Airfoils.Name,'ItemsData',1:length(Airfoils.Name));
-AeroSQL_explorer.Perfis_listbox.Position = [20 AeroSQL_explorer.main_figure.Position(4)-280 300 250];
+AeroSQL_explorer.Perfis_listbox.Position = [20 100 330 AeroSQL_explorer.main_figure.Position(4)-140];
 AeroSQL_explorer.Perfis_listbox.Tag = "perfis disponiveis";
 AeroSQL_explorer.Perfis_listbox.ValueChangedFcn = @(listbox,event) muda_lista(listbox,conn,event);
 
@@ -129,60 +129,75 @@ global AeroSQL_explorer Polares Airfoils
 
 if dropdown.Tag == "Source"
 	
+	I_n_crit = I_search(Polares.Source.n_crit(event.Value).Value, Polares.Source.n_crit(AeroSQL_explorer.aux_Source).Value(AeroSQL_explorer.dropdown_n_crit.Value));
+	I_Mach = I_search(Polares.Source.n_crit(event.Value).Mach(I_n_crit).Value, Polares.Source.n_crit(AeroSQL_explorer.aux_Source).Mach(AeroSQL_explorer.dropdown_n_crit.Value).Value(AeroSQL_explorer.dropdown_Mach.Value));
+	I_Reynolds = I_search(Polares.Source.n_crit(event.Value).Mach(I_n_crit).Reynolds(I_Mach).Value, Polares.Source.n_crit(AeroSQL_explorer.aux_Source).Mach(AeroSQL_explorer.dropdown_n_crit.Value).Reynolds(AeroSQL_explorer.dropdown_Mach.Value).Value(AeroSQL_explorer.dropdown_Reynolds.Value));
+	
 	AeroSQL_explorer.aux_Source = event.Value;
 	
 	AeroSQL_explorer.dropdown_n_crit.Items = string(Polares.Source.n_crit(event.Value).Value);
 	AeroSQL_explorer.dropdown_n_crit.ItemsData = 1:length(Polares.Source.n_crit(event.Value).Value);
+	AeroSQL_explorer.dropdown_n_crit.Value = I_n_crit;
 	
-	AeroSQL_explorer.dropdown_Mach.Items = string(Polares.Source.n_crit(event.Value).Mach(1).Value);
-	AeroSQL_explorer.dropdown_Mach.ItemsData = 1:length(Polares.Source.n_crit(event.Value).Mach(1).Value);
+	AeroSQL_explorer.dropdown_Mach.Items = string(Polares.Source.n_crit(event.Value).Mach(I_n_crit).Value);
+	AeroSQL_explorer.dropdown_Mach.ItemsData = 1:length(Polares.Source.n_crit(event.Value).Mach(I_n_crit).Value);
+	AeroSQL_explorer.dropdown_Mach.Value = I_Mach;
 	
-	AeroSQL_explorer.dropdown_Reynolds.Items = string(Polares.Source.n_crit(event.Value).Mach(1).Reynolds(1).Value);
-	AeroSQL_explorer.dropdown_Reynolds.ItemsData = 1:length(Polares.Source.n_crit(event.Value).Mach(1).Reynolds(1).Value);
+	AeroSQL_explorer.dropdown_Reynolds.Items = string(Polares.Source.n_crit(event.Value).Mach(I_n_crit).Reynolds(I_Mach).Value);
+	AeroSQL_explorer.dropdown_Reynolds.ItemsData = 1:length(Polares.Source.n_crit(event.Value).Mach(I_n_crit).Reynolds(I_Mach).Value);
+	AeroSQL_explorer.dropdown_Reynolds.Value = I_Reynolds;
 	
 	if AeroSQL_explorer.aux_Coeficiente == "Cl"
-		plot(AeroSQL_explorer.axes_coeficientes,Polares.Source.n_crit(event.Value).Mach(1).Reynolds(1).Polar(1).Value.Alpha,Polares.Source.n_crit(event.Value).Mach(1).Reynolds(1).Polar(1).Value.Cl);
+		plot(AeroSQL_explorer.axes_coeficientes,Polares.Source.n_crit(event.Value).Mach(I_n_crit).Reynolds(I_Mach).Polar(I_Reynolds).Value.Alpha,Polares.Source.n_crit(event.Value).Mach(I_n_crit).Reynolds(I_Mach).Polar(I_Reynolds).Value.Cl);
 	elseif AeroSQL_explorer.aux_Coeficiente == "Cd"
-		plot(AeroSQL_explorer.axes_coeficientes,Polares.Source.n_crit(event.Value).Mach(1).Reynolds(1).Polar(1).Value.Alpha,Polares.Source.n_crit(event.Value).Mach(1).Reynolds(1).Polar(1).Value.Cd);
+		plot(AeroSQL_explorer.axes_coeficientes,Polares.Source.n_crit(event.Value).Mach(I_n_crit).Reynolds(I_Mach).Polar(I_Reynolds).Value.Alpha,Polares.Source.n_crit(event.Value).Mach(I_n_crit).Reynolds(I_Mach).Polar(I_Reynolds).Value.Cd);
 	elseif AeroSQL_explorer.aux_Coeficiente == "Cm"
-		plot(AeroSQL_explorer.axes_coeficientes,Polares.Source.n_crit(event.Value).Mach(1).Reynolds(1).Polar(1).Value.Alpha,Polares.Source.n_crit(event.Value).Mach(1).Reynolds(1).Polar(1).Value.Cm);
+		plot(AeroSQL_explorer.axes_coeficientes,Polares.Source.n_crit(event.Value).Mach(I_n_crit).Reynolds(I_Mach).Polar(I_Reynolds).Value.Alpha,Polares.Source.n_crit(event.Value).Mach(I_n_crit).Reynolds(I_Mach).Polar(I_Reynolds).Value.Cm);
 	end
 	
 	text(AeroSQL_explorer.axes_coeficientes,0.5,0.9,Airfoils.Name{AeroSQL_explorer.aux_Perfil},'Units','normalized','FontWeight','bold','FontSize',25,'HorizontalAlignment','Center')
 		
 elseif dropdown.Tag == "n_crit"
 	
+	I_Mach = I_search(Polares.Source.n_crit(AeroSQL_explorer.aux_Source).Mach(event.Value).Value, Polares.Source.n_crit(AeroSQL_explorer.dropdown_Source.Value).Mach(AeroSQL_explorer.aux_n_crit).Value(AeroSQL_explorer.dropdown_Mach.Value));
+	I_Reynolds = I_search(Polares.Source.n_crit(AeroSQL_explorer.aux_Source).Mach(event.Value).Reynolds(I_Mach).Value, Polares.Source.n_crit(AeroSQL_explorer.dropdown_Source.Value).Mach(AeroSQL_explorer.aux_n_crit).Reynolds(AeroSQL_explorer.dropdown_Mach.Value).Value(AeroSQL_explorer.dropdown_Reynolds.Value));
+
 	AeroSQL_explorer.aux_n_crit = event.Value;
 	
 	AeroSQL_explorer.dropdown_Mach.Items = string(Polares.Source.n_crit(AeroSQL_explorer.aux_Source).Mach(event.Value).Value);
 	AeroSQL_explorer.dropdown_Mach.ItemsData = 1:length(Polares.Source.n_crit(AeroSQL_explorer.aux_Source).Mach(event.Value).Value);
+	AeroSQL_explorer.dropdown_Mach.Value = I_Mach;
 	
 	AeroSQL_explorer.dropdown_Reynolds.Items = string(Polares.Source.n_crit(AeroSQL_explorer.aux_Source).Mach(event.Value).Reynolds(1).Value);
 	AeroSQL_explorer.dropdown_Reynolds.ItemsData = 1:length(Polares.Source.n_crit(AeroSQL_explorer.aux_Source).Mach(event.Value).Reynolds(1).Value);
+	AeroSQL_explorer.dropdown_Reynolds.Value = I_Reynolds;
 	
 	if AeroSQL_explorer.aux_Coeficiente == "Cl"
-		plot(AeroSQL_explorer.axes_coeficientes,Polares.Source.n_crit(AeroSQL_explorer.aux_Source).Mach(event.Value).Reynolds(1).Polar(1).Value.Alpha,Polares.Source.n_crit(AeroSQL_explorer.aux_Source).Mach(event.Value).Reynolds(1).Polar(1).Value.Cl);
+		plot(AeroSQL_explorer.axes_coeficientes,Polares.Source.n_crit(AeroSQL_explorer.aux_Source).Mach(event.Value).Reynolds(I_Mach).Polar(I_Reynolds).Value.Alpha,Polares.Source.n_crit(AeroSQL_explorer.aux_Source).Mach(event.Value).Reynolds(I_Mach).Polar(I_Reynolds).Value.Cl);
 	elseif AeroSQL_explorer.aux_Coeficiente == "Cd"
-		plot(AeroSQL_explorer.axes_coeficientes,Polares.Source.n_crit(AeroSQL_explorer.aux_Source).Mach(event.Value).Reynolds(1).Polar(1).Value.Alpha,Polares.Source.n_crit(AeroSQL_explorer.aux_Source).Mach(event.Value).Reynolds(1).Polar(1).Value.Cd);
+		plot(AeroSQL_explorer.axes_coeficientes,Polares.Source.n_crit(AeroSQL_explorer.aux_Source).Mach(event.Value).Reynolds(I_Mach).Polar(I_Reynolds).Value.Alpha,Polares.Source.n_crit(AeroSQL_explorer.aux_Source).Mach(event.Value).Reynolds(I_Mach).Polar(I_Reynolds).Value.Cd);
 	elseif AeroSQL_explorer.aux_Coeficiente == "Cm"
-		plot(AeroSQL_explorer.axes_coeficientes,Polares.Source.n_crit(AeroSQL_explorer.aux_Source).Mach(event.Value).Reynolds(1).Polar(1).Value.Alpha,Polares.Source.n_crit(AeroSQL_explorer.aux_Source).Mach(event.Value).Reynolds(1).Polar(1).Value.Cm);
+		plot(AeroSQL_explorer.axes_coeficientes,Polares.Source.n_crit(AeroSQL_explorer.aux_Source).Mach(event.Value).Reynolds(I_Mach).Polar(I_Reynolds).Value.Alpha,Polares.Source.n_crit(AeroSQL_explorer.aux_Source).Mach(event.Value).Reynolds(I_Mach).Polar(I_Reynolds).Value.Cm);
 	end
 	
 	text(AeroSQL_explorer.axes_coeficientes,0.5,0.9,Airfoils.Name{AeroSQL_explorer.aux_Perfil},'Units','normalized','FontWeight','bold','FontSize',25,'HorizontalAlignment','Center')
 	
 elseif dropdown.Tag == "Mach"
 	
+	I_Reynolds = I_search(Polares.Source.n_crit(AeroSQL_explorer.aux_Source).Mach(AeroSQL_explorer.aux_n_crit).Reynolds(event.Value).Value, Polares.Source.n_crit(AeroSQL_explorer.dropdown_Source.Value).Mach(AeroSQL_explorer.aux_n_crit).Reynolds(AeroSQL_explorer.aux_Mach).Value(AeroSQL_explorer.dropdown_Reynolds.Value));
+	
 	AeroSQL_explorer.aux_Mach = event.Value;
 	
 	AeroSQL_explorer.dropdown_Reynolds.Items = string(Polares.Source.n_crit(AeroSQL_explorer.aux_Source).Mach(AeroSQL_explorer.aux_n_crit).Reynolds(event.Value).Value);
 	AeroSQL_explorer.dropdown_Reynolds.ItemsData = 1:length(Polares.Source.n_crit(AeroSQL_explorer.aux_Source).Mach(AeroSQL_explorer.aux_n_crit).Reynolds(event.Value).Value);
+	AeroSQL_explorer.dropdown_Reynolds.Value = I_Reynolds;
 	
 	if AeroSQL_explorer.aux_Coeficiente == "Cl"
-		plot(AeroSQL_explorer.axes_coeficientes,Polares.Source.n_crit(AeroSQL_explorer.aux_Source).Mach(AeroSQL_explorer.aux_n_crit).Reynolds(event.Value).Polar(1).Value.Alpha,Polares.Source.n_crit(AeroSQL_explorer.aux_Source).Mach(AeroSQL_explorer.aux_n_crit).Reynolds(event.Value).Polar(1).Value.Cl);
+		plot(AeroSQL_explorer.axes_coeficientes,Polares.Source.n_crit(AeroSQL_explorer.aux_Source).Mach(AeroSQL_explorer.aux_n_crit).Reynolds(event.Value).Polar(I_Reynolds).Value.Alpha,Polares.Source.n_crit(AeroSQL_explorer.aux_Source).Mach(AeroSQL_explorer.aux_n_crit).Reynolds(event.Value).Polar(I_Reynolds).Value.Cl);
 	elseif AeroSQL_explorer.aux_Coeficiente == "Cd"
-		plot(AeroSQL_explorer.axes_coeficientes,Polares.Source.n_crit(AeroSQL_explorer.aux_Source).Mach(AeroSQL_explorer.aux_n_crit).Reynolds(event.Value).Polar(1).Value.Alpha,Polares.Source.n_crit(AeroSQL_explorer.aux_Source).Mach(AeroSQL_explorer.aux_n_crit).Reynolds(event.Value).Polar(1).Value.Cd);
+		plot(AeroSQL_explorer.axes_coeficientes,Polares.Source.n_crit(AeroSQL_explorer.aux_Source).Mach(AeroSQL_explorer.aux_n_crit).Reynolds(event.Value).Polar(I_Reynolds).Value.Alpha,Polares.Source.n_crit(AeroSQL_explorer.aux_Source).Mach(AeroSQL_explorer.aux_n_crit).Reynolds(event.Value).Polar(I_Reynolds).Value.Cd);
 	elseif AeroSQL_explorer.aux_Coeficiente == "Cm"
-		plot(AeroSQL_explorer.axes_coeficientes,Polares.Source.n_crit(AeroSQL_explorer.aux_Source).Mach(AeroSQL_explorer.aux_n_crit).Reynolds(event.Value).Polar(1).Value.Alpha,Polares.Source.n_crit(AeroSQL_explorer.aux_Source).Mach(AeroSQL_explorer.aux_n_crit).Reynolds(event.Value).Polar(1).Value.Cm);
+		plot(AeroSQL_explorer.axes_coeficientes,Polares.Source.n_crit(AeroSQL_explorer.aux_Source).Mach(AeroSQL_explorer.aux_n_crit).Reynolds(event.Value).Polar(I_Reynolds).Value.Alpha,Polares.Source.n_crit(AeroSQL_explorer.aux_Source).Mach(AeroSQL_explorer.aux_n_crit).Reynolds(event.Value).Polar(I_Reynolds).Value.Cm);
 	end
 	
 	text(AeroSQL_explorer.axes_coeficientes,0.5,0.9,Airfoils.Name{AeroSQL_explorer.aux_Perfil},'Units','normalized','FontWeight','bold','FontSize',25,'HorizontalAlignment','Center')
@@ -253,6 +268,12 @@ for i_Source = 1:length(u_Source)
 	end
 	
 end
+
+end
+
+function I = I_search(Vetor, Valor)
+
+[~,I] = min(abs(Vetor - Valor));
 
 end
 
