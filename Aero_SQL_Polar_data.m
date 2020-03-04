@@ -8,6 +8,7 @@ addParameter(p,'N_Crit',9,@(x) assert(isnumeric(x) && isscalar(x) && (x >= 0),'N
 addParameter(p,'Mach',0,@(x) assert(isnumeric(x) && isscalar(x) && (x >= 0),'Mach númber must be numeric, scalar and greater than 0'));
 addParameter(p,'Source','Xfoil',@(x) assert(isstring(x),'Source name must be a sring'))
 addParameter(p,'Creator_username','daanrsantiago',@(x) assert(isstring(x),'Creator_username must be a sring'))
+addParameter(p,'Plot',false,@(x) isa(true,'logical'));
 addRequired(p,'Re',@(x) assert(isnumeric(x) && isscalar(x) && (x > 0),'Reynolds númber must be numeric, scalar and greater than 0'));
 addParameter(p,'Output',"Polar",@(x) any(validatestring(x,{'Polar','Alpha','Cl','Cd','Cm'})));
 parse(p,AirfoilNameID,Re,varargin{:});
@@ -51,6 +52,42 @@ varargout{2} = AirfoilData;
 
 if strcmp(p.Results.AditionalOutput,'PolarProperties')
 	varargout{3} = fetch(conn,sprintf("SELECT * FROM PolarProperties WHERE RunID = %u LIMIT 1;",RunID));
+end
+
+if p.Results.Plot == true
+	
+	Polar_figure.Figure = uifigure();
+	Polar_figure.Figure.Name = ['Polars : ',AirfoilData.Name{1}];
+	Polar_figure.Figure.Position(1:2) = Polar_figure.Figure.Position(1:2) - 100;
+	Polar_figure.Figure.Position(3:4) = [700 500];
+	
+	Polar_figure.TabGroup = uitabgroup(Polar_figure.Figure);
+	Polar_figure.TabGroup.Position = [0 0 Polar_figure.Figure.Position(3) Polar_figure.Figure.Position(4)];
+	
+	Polar_figure.Tab_Cl_Alpha = uitab(Polar_figure.TabGroup);
+	Polar_figure.Tab_Cl_Alpha.Title = 'Cl x Alpha';
+	Polar_figure.Cl_Alpha_axes = uiaxes(Polar_figure.Tab_Cl_Alpha,'OuterPosition',[10 10 Polar_figure.Figure.Position(3)-20 Polar_figure.Figure.Position(4)-40]);
+	plot(Polar_figure.Cl_Alpha_axes,Polar.Alpha,Polar.Cl);
+	grid(Polar_figure.Cl_Alpha_axes,'minor');
+	xlabel(Polar_figure.Cl_Alpha_axes,'\alpha [º]');
+	ylabel(Polar_figure.Cl_Alpha_axes,'Cl [-]');
+	
+	Polar_figure.Tab_Cd_Alpha = uitab(Polar_figure.TabGroup);
+	Polar_figure.Tab_Cd_Alpha.Title = 'Cd x Alpha';
+	Polar_figure.Cd_Alpha_axes = uiaxes(Polar_figure.Tab_Cd_Alpha,'OuterPosition',[10 10 Polar_figure.Figure.Position(3)-20 Polar_figure.Figure.Position(4)-40]);
+	plot(Polar_figure.Cd_Alpha_axes,Polar.Alpha,Polar.Cd);
+	grid(Polar_figure.Cd_Alpha_axes,'minor');
+	xlabel(Polar_figure.Cd_Alpha_axes,'\alpha [º]');
+	ylabel(Polar_figure.Cd_Alpha_axes,'Cd [-]');
+	
+	Polar_figure.Tab_Cm_Alpha = uitab(Polar_figure.TabGroup);
+	Polar_figure.Tab_Cm_Alpha.Title = 'Cm x Alpha';
+	Polar_figure.Cm_Alpha_axes = uiaxes(Polar_figure.Tab_Cm_Alpha,'OuterPosition',[10 10 Polar_figure.Figure.Position(3)-20 Polar_figure.Figure.Position(4)-40]);
+	plot(Polar_figure.Cm_Alpha_axes,Polar.Alpha,Polar.Cm);
+	grid(Polar_figure.Cm_Alpha_axes,'minor');
+	xlabel(Polar_figure.Cm_Alpha_axes,'\alpha [º]');
+	ylabel(Polar_figure.Cm_Alpha_axes,'Cm [-]');
+	
 end
 
 end
