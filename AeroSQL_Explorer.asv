@@ -18,7 +18,8 @@ conn = database('AeroSQLDB_MySQL_Reader','Reader','');
 
 %% Obtendo Tabela Airfoils
 
-Airfoils = fetch(conn,"SELECT * FROM Airfoils;");
+Airfoils = cell2table(fetch(conn,"SELECT * FROM Airfoils;",'DataReturnFormat','cellarray'),'VariableNames',{'AirfoilID','File_name','Name','Thickness','X_Thickness','Camber','X_Camber','Source','Creator_username'});
+
 
 %% Criando UI
 
@@ -286,7 +287,7 @@ elseif dropdown.Tag == "Mach"
 	elseif AeroSQL_explorer.aux_Coeficiente == "Cd"
 		plot(AeroSQL_explorer.axes_coeficientes,Polares.Source.n_crit(AeroSQL_explorer.aux_Source).Mach(AeroSQL_explorer.aux_n_crit).Reynolds(event.Value).Polar(I_Reynolds).Value.Alpha,Polares.Source.n_crit(AeroSQL_explorer.aux_Source).Mach(AeroSQL_explorer.aux_n_crit).Reynolds(event.Value).Polar(I_Reynolds).Value.Cd);
 		axis(AeroSQL_explorer.axes_coeficientes,[-25 30 0 0.35])
-		text(AeroSQL_explorer.axes_coeficientes, Polares.Source.n_crit(AeroSQL_explorer.aux_Source).Mach(event.Value).Reynolds(I_Mach).Polar(I_Reynolds).PolarProperties.Alpha_0_Cl, Polares.Source.n_crit(AeroSQL_explorer.aux_Source).Mach(event.Value).Reynolds(I_Mach).Polar(I_Reynolds).PolarProperties.Cd_min, sprintf("\\downarrow Cd_{min} = %.5f", Polares.Source.n_crit(AeroSQL_explorer.aux_Source).Mach(event.Value).Reynolds(I_Mach).Polar(I_Reynolds).PolarProperties.Cd_min),'verticalAlignment', 'bottom')
+		text(AeroSQL_explorer.axes_coeficientes, Polares.Source.n_crit(AeroSQL_explorer.aux_Source).Mach(AeroSQL_explorer.aux_n_crit).Reynolds(event.Value).Polar(I_Reynolds).PolarProperties.Alpha_0_Cl, Polares.Source.n_crit(AeroSQL_explorer.aux_Source).Mach(AeroSQL_explorer.aux_n_crit).Reynolds(event.Value).Polar(I_Reynolds).PolarProperties.Cd_min, sprintf("\\downarrow Cd_{min} = %.5f", Polares.Source.n_crit(AeroSQL_explorer.aux_Source).Mach(AeroSQL_explorer.aux_n_crit).Reynolds(event.Value).Polar(I_Reynolds).PolarProperties.Cd_min),'verticalAlignment', 'bottom')
 	elseif AeroSQL_explorer.aux_Coeficiente == "Cm"
 		plot(AeroSQL_explorer.axes_coeficientes,Polares.Source.n_crit(AeroSQL_explorer.aux_Source).Mach(AeroSQL_explorer.aux_n_crit).Reynolds(event.Value).Polar(I_Reynolds).Value.Alpha,Polares.Source.n_crit(AeroSQL_explorer.aux_Source).Mach(AeroSQL_explorer.aux_n_crit).Reynolds(event.Value).Polar(I_Reynolds).Value.Cm);
 	end
@@ -313,7 +314,7 @@ elseif dropdown.Tag == "Reynolds"
 	elseif AeroSQL_explorer.aux_Coeficiente == "Cd"
 		plot(AeroSQL_explorer.axes_coeficientes,Polares.Source.n_crit(AeroSQL_explorer.aux_Source).Mach(AeroSQL_explorer.aux_n_crit).Reynolds(AeroSQL_explorer.aux_Mach).Polar(event.Value).Value.Alpha,Polares.Source.n_crit(AeroSQL_explorer.aux_Source).Mach(AeroSQL_explorer.aux_n_crit).Reynolds(AeroSQL_explorer.aux_Mach).Polar(event.Value).Value.Cd);
 		axis(AeroSQL_explorer.axes_coeficientes,[-25 30 0 0.35])
-		text(AeroSQL_explorer.axes_coeficientes, Polares.Source.n_crit(AeroSQL_explorer.aux_Source).Mach(event.Value).Reynolds(I_Mach).Polar(I_Reynolds).PolarProperties.Alpha_0_Cl, Polares.Source.n_crit(AeroSQL_explorer.aux_Source).Mach(event.Value).Reynolds(I_Mach).Polar(I_Reynolds).PolarProperties.Cd_min, sprintf("\\downarrow Cd_{min} = %.5f", Polares.Source.n_crit(AeroSQL_explorer.aux_Source).Mach(event.Value).Reynolds(I_Mach).Polar(I_Reynolds).PolarProperties.Cd_min),'verticalAlignment', 'bottom')
+		text(AeroSQL_explorer.axes_coeficientes, Polares.Source.n_crit(AeroSQL_explorer.aux_Source).Mach(AeroSQL_explorer.aux_n_crit).Reynolds(AeroSQL_explorer.aux_Mach).Polar(event.Value).PolarProperties.Alpha_0_Cl, Polares.Source.n_crit(AeroSQL_explorer.aux_Source).Mach(AeroSQL_explorer.aux_n_crit).Reynolds(AeroSQL_explorer.aux_Mach).Polar(event.Value).PolarProperties.Cd_min, sprintf("\\downarrow Cd_{min} = %.5f", Polares.Source.n_crit(AeroSQL_explorer.aux_Source).Mach(AeroSQL_explorer.aux_n_crit).Reynolds(AeroSQL_explorer.aux_Mach).Polar(event.Value).PolarProperties.Cd_min),'verticalAlignment', 'bottom')
 	elseif AeroSQL_explorer.aux_Coeficiente == "Cm"
 		plot(AeroSQL_explorer.axes_coeficientes,Polares.Source.n_crit(AeroSQL_explorer.aux_Source).Mach(AeroSQL_explorer.aux_n_crit).Reynolds(AeroSQL_explorer.aux_Mach).Polar(event.Value).Value.Alpha,Polares.Source.n_crit(AeroSQL_explorer.aux_Source).Mach(AeroSQL_explorer.aux_n_crit).Reynolds(AeroSQL_explorer.aux_Mach).Polar(event.Value).Value.Cm);
 	end
@@ -520,9 +521,9 @@ end
 
 function [Polares,I_alpha_glued_polar] = Estrutura_Polares(conn,AirfoilID)
 
-Runs = fetch(conn,sprintf("SELECT * FROM Runs WHERE AirfoilID = %u",AirfoilID));
-Raw_Polares = fetch(conn,sprintf("SELECT * FROM Polars WHERE AirfoilID = %u",AirfoilID));
-Raw_PolarProperties = fetch(conn,sprintf("SELECT * FROM polarproperties WHERE AirfoilID = %u",AirfoilID));
+Runs = cell2table(fetch(conn,sprintf("SELECT * FROM Runs WHERE AirfoilID = %u",AirfoilID)),'VariableNames',{'RunID','AirfoilID','N_Points','Alpha_min','Alpha_max','Ncrit','Mach','Reynolds','Source','Status','RunDate','Creator_username','AdditionalData'});
+Raw_Polares = cell2table(fetch(conn,sprintf("SELECT * FROM Polars WHERE AirfoilID = %u",AirfoilID)),'VariableNames',{'RunID','AirfoilID','Alpha','Cl','Cd','Cm'});
+Raw_PolarProperties = cell2table(fetch(conn,sprintf("SELECT * FROM polarproperties WHERE AirfoilID = %u",AirfoilID)),'VariableNames',{'});
 
 if isempty(Raw_Polares)
 	

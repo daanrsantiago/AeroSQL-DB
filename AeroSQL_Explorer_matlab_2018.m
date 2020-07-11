@@ -18,7 +18,7 @@ conn = database('AeroSQLDB_MySQL_Reader','Reader','');
 
 %% Obtendo Tabela Airfoils
 
-Airfoils = fetch(conn,"SELECT * FROM Airfoils;");
+Airfoils = cell2table(fetch(conn,"SELECT * FROM Airfoils;"),'VariableNames',{'AirfoilID','File_name','Name','Thickness','X_Thickness','Camber','X_Camber','Source','Creator_username'});
 
 
 %% Criando UI
@@ -129,7 +129,7 @@ if listbox.Tag == "perfis disponiveis"
 	
 	%% Obtendo Geometria do perfil selecionado
 	
-	geometria_perfil = fetch(conn,sprintf("SELECT X,Y,Side FROM Geometries WHERE AirfoilID = %u;", Airfoils.AirfoilID(event.Value)));
+	geometria_perfil = cell2table(fetch(conn,sprintf("SELECT X,Y,Side FROM Geometries WHERE AirfoilID = %u;", Airfoils.AirfoilID(event.Value))),'VariableNames',{'X','Y','Side'});
 	plot(AeroSQL_explorer.axes_geometria, geometria_perfil.X, geometria_perfil.Y)
 	text(AeroSQL_explorer.axes_geometria,0.5,0.9,Airfoils.Name{listbox.Value},'Units','normalized','FontWeight','bold','FontSize',25,'HorizontalAlignment','Center')
 	
@@ -521,9 +521,9 @@ end
 
 function [Polares,I_alpha_glued_polar] = Estrutura_Polares(conn,AirfoilID)
 
-Runs = fetch(conn,sprintf("SELECT * FROM Runs WHERE AirfoilID = %u",AirfoilID));
-Raw_Polares = fetch(conn,sprintf("SELECT * FROM Polars WHERE AirfoilID = %u",AirfoilID));
-Raw_PolarProperties = fetch(conn,sprintf("SELECT * FROM polarproperties WHERE AirfoilID = %u",AirfoilID));
+Runs = cell2table(fetch(conn,sprintf("SELECT * FROM Runs WHERE AirfoilID = %u",AirfoilID)),'VariableNames',{'RunID','AirfoilID','N_Points','Alpha_min','Alpha_max','Ncrit','Mach','Reynolds','Source','Status','RunDate','Creator_username','AdditionalData'});
+Raw_Polares = cell2table(fetch(conn,sprintf("SELECT * FROM Polars WHERE AirfoilID = %u",AirfoilID)),'VariableNames',{'RunID','AirfoilID','Alpha','Cl','Cd','Cm'});
+Raw_PolarProperties = cell2table(fetch(conn,sprintf("SELECT * FROM polarproperties WHERE AirfoilID = %u",AirfoilID)),'VariableNames',{'RunID','AirfoilID','Cl_max','Cl_0','Cl_alpha','Cd_min','Cd_max','Cl_Cd_max','Cm_0','Alpha_stall','Alpha_0_Cl','Alpha_Cl_Cd_max','Creator_username'});
 
 if isempty(Raw_Polares)
 	
