@@ -45,4 +45,8 @@ Click on System DSN tab and then click on "add" buttom
 
 Click on MySQL ODBC 5.3 Unicode driver and fill the forms on the next window as below:
 
-[MySQL connector information](./docs/MySQL_connector_information.png) 
+<img src="./docs/MySQL_connector_information.png"/>
+
+After those steps you shoul'd be able to excecute AeroSQL_Explorer.m or AeroSQL_Explorer_matlab_2018.m (for matlab versions below 2018). The result should be as the following:
+
+<video src="./docs/AeroSQL_explorer_example.mp4"/>
