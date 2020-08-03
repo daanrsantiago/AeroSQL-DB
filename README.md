@@ -45,4 +45,4 @@ Click on System DSN tab and then click on "add" buttom
 
 Click on MySQL ODBC 5.3 Unicode driver and fill the forms on the next window as below:
 
-[MySQL connector information](./docs/MySQL_connector_inf.png) 
+[MySQL connector information](./docs/MySQL_connector_information.png) 
