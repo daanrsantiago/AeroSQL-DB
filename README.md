@@ -25,6 +25,10 @@ and Mach numbers.
 The database can be accessed through any mysql connector available for the programing language you chose (more details on the connectors and APIs in https://www.mysql.com/products/connector/), 
 but this repository it's shipped with pre made scripts that helps to access and visualize and download the data in it using python or matlab, wich will be covered next.
 
+<h3>Important!!!</h3>
+
+The URL/IP to access the database provided may change in future, this repository will provide the latest URL/IP for the connection
+
 <h2>Matlab database access scripts</h2>
 
 For the matlab script it's necessary to download the mysql ODBC driver that can be found on https://dev.mysql.com/downloads/connector/odbc/5.3.html and configure it following this steps:
@@ -43,10 +47,27 @@ Click on System DSN tab and then click on "add" buttom
 
 <h3>4: Fill the form according to the image below</h3>
 
-Click on MySQL ODBC 5.3 Unicode driver and fill the forms on the next window as below:
+Click on MySQL ODBC 5.3 Unicode driver and fill the forms on the next window as below and press ok:
 
 <img src="./docs/MySQL_connector_information.png"/>
 
-After those steps you shoul'd be able to excecute AeroSQL_Explorer.m or AeroSQL_Explorer_matlab_2018.m (for matlab versions below 2018). The result should be as the following:
+After those steps you should be able to excecute AeroSQL_Explorer.m or AeroSQL_Explorer_matlab_2018.m (for matlab versions below 2018). The result should be as the following:
 
-<video src="./docs/AeroSQL_explorer_example.mp4"/>
+<img src="./docs/AeroSQL_explorer_example.gif"/>
+
+<h2> Python database access scripts </h2>
+
+To use python database access scripts you should have numpy, matplotlib and pymysql installed and provide a pymysql cursor as the example below
+
+```
+import pymysql as sql
+
+aerosqldb = sql.connect(host='aerosqldb.ddns.net',
+user='Reader',
+password='',
+db='AeroSQLDB')
+
+cursor = aerosqldb.cursor()
+```
+
+with that being done, just import AeroSQLDB_Utilities module and provide the cursor as the first argument, the rest should be very straightforward
