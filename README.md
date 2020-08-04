@@ -13,8 +13,9 @@ and Mach numbers.
  To make this more suitable, it is pre-populated with all airfoil geometries from UIUC database (link below) and they aerodynamic coefficients for a vast range of Reynolds and Mach numbers
  together with an method for extending their alfa range up to 110° using Björn Montgomerie method.
  
- More detail in the document 'Banco de dados muti-plataforma de coeficientes aerodinâmicos de baixo Reynolds para ângulos de ataque estendidos com dependência de Mach.pdf' contained
- in the repository, and in the youtube link below:
+ More detail in the document contained in the repository, and in the youtube link below:
+ 
+ [Banco de dados muti-plataforma de coeficientes aerodinâmicos de baixo Reynolds para ângulos de ataque estendidos com dependência de Mach.pdf](./docs/Banco_de_dados_muti-plataforma_de_coeficientes_aerodinâmicos_de_baixo_Reynolds_para_ângulos_de_ataque_estendidos_com_dependência_de_Mach.pdf)
  
  https://www.youtube.com/watch?v=DbpSJpwQThg
  
